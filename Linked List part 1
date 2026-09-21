@@ -1,0 +1,377 @@
+types of Linked List : 
+
+1 : one way linked list 
+2 : two way linked list 
+3 : round way linked list 
+
+* : round  way linked list is form off two linked list .
+
+--
+order's of one way linked list :
+
+1- add : 
+
+add to head : O(1)
+add to tail : O(1)
+add to body : O(n) 
+
+2- delete : 
+
+delete the head Node  : O(1) 
+delete the tail Node : O(n)
+delete a Node in middle : O(n) 
+
+3- search :
+
+finding a Node : O(n)
+
+4- Move between the Node's : 
+
+Moving between the Node's : O(n)
+
+--
+order's of two way linked list : 
+
+1- add : 
+
+add to head : O(1)
+add to tail : O(1)
+add to body : O(n) 
+
+2- delete : 
+
+delete the head Node  : O(1) 
+delete the tail Node : O(1)
+delete a Node in middle : O(n) 
+
+3- search :
+
+finding a Node : O(n)
+
+4- Move between the Node's : 
+
+Moving between the Node's : O(n)
+
+--
+* : because round way linked list is a form off a two way linked list the order's are same . 
+
+
+
+All the codes are from quera or Ai 
+for this project because i have one week time line
+in Linked List part 2 i used my own code's .
+--
+C++ code of one way linked list : 
+" 
+template <typename T>
+class Node {
+public:
+    T data;
+    Node* next;
+
+    Node() : next(nullptr) {}
+    Node(T val) : data(val), next(nullptr) {}
+};
+
+template <typename T>
+class SinglyLinkedList {
+public:
+    Node<T>* head;
+    Node<T>* tail;
+    int size;
+
+public:
+    // Constructor
+    SinglyLinkedList() : head(nullptr), tail(nullptr), size(0) {}
+
+    // Destructor
+    ~SinglyLinkedList() {
+        while (head != nullptr) {
+            removeFirst();
+        }
+    }
+
+    // Add a node at the front
+    void addFirst(T newVal) {
+        Node<T>* newNode = new Node<T>(newVal);
+        newNode->next = head;
+        head = newNode;
+        if (tail == nullptr) {
+            tail = newNode;
+        }
+        size++;
+    }
+
+    // Add a node after a given node or at the end
+    void addLastOrMiddle(Node<T>* prevNode, T newVal) {
+        if (prevNode == nullptr) {
+            // Previous node cannot be nullptr.
+            return;
+        }
+        Node<T>* newNode = new Node<T>(newVal);
+        
+        // If the list is empty, make the new node the head and tail
+        if (head == nullptr) {
+            head = tail = newNode;
+        } else {
+            newNode->next = prevNode->next;
+            prevNode->next = newNode;
+            if (prevNode == tail) {
+                tail = newNode;
+            }
+        }
+        size++;
+    }
+
+    // Remove the first node
+    void removeFirst() {
+        if (head == nullptr) {
+            // Cannot remove from an empty list.
+            return;
+        }
+        Node<T>* prevHead = head;
+        head = head->next;
+        if (prevHead == tail) {
+            tail = nullptr;
+        }
+        delete prevHead;
+        size--;
+    }
+
+    // Remove a node after a given node
+    void removeLastOrMiddle(Node<T>* prevNode) {
+        if (head == nullptr) {
+            // Cannot remove from an empty list.
+            return;
+        }
+        if (prevNode == nullptr || prevNode->next == nullptr) {
+            // Invalid node. The node to be removed must exist.
+            return;
+        }
+
+        Node<T>* delNode = prevNode->next;
+        prevNode->next = delNode->next;
+        if (delNode == tail) {
+            tail = prevNode;
+        }
+        delete delNode;
+        size--;
+    }
+
+    // Get the size of the list
+    int getSize() const {
+        return size;
+    }
+
+    // Utility to print the list
+    void printList() const {
+        Node<T>* current = head;
+        while (current != nullptr) {
+            std::cout << current->data << " ";
+            current = current->next;
+        }
+        std::cout << std::endl;
+    }
+};
+" 
+
+--
+C++ code of two way linked list :
+"
+template <typename T>
+class Node {
+public:
+    T data;
+    Node* next;
+    Node* prev;
+
+    Node() : next(nullptr), prev(nullptr) {}
+    Node(T val) : data(val), next(nullptr), prev(nullptr) {}
+};
+
+template <typename T>
+class DoublyLinkedList {
+public:
+    Node<T>* header;
+    Node<T>* trailer;
+    int size;
+
+public:
+    // Constructor
+    DoublyLinkedList() {
+        header = new Node<T>();
+        trailer = new Node<T>();
+        header->next = trailer;
+        trailer->prev = header;
+        size = 0;
+    }
+
+    // Destructor
+    ~DoublyLinkedList() {
+        while (header->next != trailer) {
+            removeNode(header->next);
+        }
+        delete header;
+        delete trailer;
+    }
+
+    // Add a node between two existing nodes
+    void addNode(T newVal, Node<T>* prevNode, Node<T>* nextNode) {
+        Node<T>* newNode = new Node<T>(newVal);
+        newNode->next = nextNode;
+        newNode->prev = prevNode;
+        prevNode->next = newNode;
+        nextNode->prev = newNode;
+        size++;
+    }
+
+    // Remove a specific node
+    void removeNode(Node<T>* delNode) {
+        if (delNode == header || delNode == trailer) {
+            // Cannot remove header or trailer nodes.
+            return;
+        }
+        delNode->prev->next = delNode->next;
+        delNode->next->prev = delNode->prev;
+        delete delNode;
+        size--;
+    }
+
+    // Get the size of the list
+    int getSize() const {
+        return size;
+    }
+
+    // Utility to print the list
+    void printList() const {
+        Node<T>* current = header->next;
+        while (current != trailer) {
+            std::cout << current->data << " ";
+            current = current->next;
+        }
+        std::cout << std::endl;
+    }
+
+    // Add to the front
+    void addToFront(T data) {
+        addNode(data, header, header->next);
+    }
+
+    // Add to the back
+    void addToBack(T data) {
+        addNode(data, trailer->prev, trailer);
+    }
+
+    // Remove from the front
+    void removeFromFront() {
+        if (size > 0) {
+            removeNode(header->next);
+        }
+    }
+
+    // Remove from the back
+    void removeFromBack() {
+        if (size > 0) {
+            removeNode(trailer->prev);
+        }
+    }
+};
+"
+
+--
+Java code of one way linked list :
+"
+class Node<T> {
+    T data;
+    Node<T> next;
+
+    public Node(T data) {
+        this.data = data;
+        this.next = null;
+    }
+}
+
+public class SinglyLinkedList<T> {
+    private Node<T> head;
+    private Node<T> tail;
+    private int size;
+
+    public SinglyLinkedList() {
+        this.head = null;
+        this.tail = null;
+        this.size = 0;
+    }
+
+    public void addFirst(T data) {
+        Node<T> newNode = new Node<>(data);
+        newNode.next = head;
+        head = newNode;
+        if (tail == null) {
+            tail = newNode;
+        }
+        size++;
+    }
+
+    public void addLastOrMiddle(Node<T> prevNode, T data) {
+        if (prevNode == null) {
+            // Previous node cannot be null
+            return;
+        }
+        Node<T> newNode = new Node<>(data);
+        newNode.next = prevNode.next;
+        prevNode.next = newNode;
+        if (prevNode == tail) {
+            tail = newNode;
+        }
+        size++;
+    }
+
+    public void removeFirst() {
+        if (head == null) {
+            // Cannot remove from an empty list
+            return;
+        }
+        Node<T> removedNode = head;
+        head = head.next;
+        if (removedNode == tail) {
+            tail = null;
+        }
+        size--;
+    }
+
+    public void removeLastOrMiddle(Node<T> prevNode) {
+        if (prevNode == null || prevNode.next == null) {
+            // Invalid previous node
+            return;
+        }
+        Node<T> delNode = prevNode.next;
+        prevNode.next = delNode.next;
+        if (delNode == tail) {
+            tail = prevNode;
+        }
+        size--;
+    }
+
+    public int getSize() {
+        return size;
+    }
+
+    public void printList() {
+        Node<T> current = head;
+        while (current != null) {
+            System.out.print(current.data + " ");
+            current = current.next;
+        }
+        System.out.println();
+    }
+}
+"
+
+--
+Java code of two way linked list :
+"
+
+
+
+
+
