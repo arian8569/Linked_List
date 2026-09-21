@@ -1,0 +1,216 @@
+One way linked list : 
+
+template <typename T>
+class Node {
+public:
+    T data;
+    Node* next;
+
+    Node() : next(nullptr) {}
+    Node(T val) : data(val), next(nullptr) {}
+};
+
+template <typename T>
+class SinglyLinkedList {
+public:
+    Node<T>* head;
+    Node<T>* tail;
+    int size;
+
+public:
+    // Constructor
+    SinglyLinkedList() : head(nullptr), tail(nullptr), size(0) {}
+
+    // Destructor
+    ~SinglyLinkedList() {
+        while (head != nullptr) {
+            removeFirst();
+        }
+    }
+
+    // Add a node at the front
+    void addFirst(T newVal) {
+        Node<T>* newNode = new Node<T>(newVal);
+        newNode->next = head;
+        head = newNode;
+        if (tail == nullptr) {
+            tail = newNode;
+        }
+        size++;
+    }
+
+    // Add a node after a given node or at the end
+    void addLastOrMiddle(Node<T>* prevNode, T newVal) {
+        if (prevNode == nullptr) {
+            // Previous node cannot be nullptr.
+            return;
+        }
+        Node<T>* newNode = new Node<T>(newVal);
+        
+        // If the list is empty, make the new node the head and tail
+        if (head == nullptr) {
+            head = tail = newNode;
+        } else {
+            newNode->next = prevNode->next;
+            prevNode->next = newNode;
+            if (prevNode == tail) {
+                tail = newNode;
+            }
+        }
+        size++;
+    }
+
+    // Remove the first node
+    void removeFirst() {
+        if (head == nullptr) {
+            // Cannot remove from an empty list.
+            return;
+        }
+        Node<T>* prevHead = head;
+        head = head->next;
+        if (prevHead == tail) {
+            tail = nullptr;
+        }
+        delete prevHead;
+        size--;
+    }
+
+    // Remove a node after a given node
+    void removeLastOrMiddle(Node<T>* prevNode) {
+        if (head == nullptr) {
+            // Cannot remove from an empty list.
+            return;
+        }
+        if (prevNode == nullptr || prevNode->next == nullptr) {
+            // Invalid node. The node to be removed must exist.
+            return;
+        }
+
+        Node<T>* delNode = prevNode->next;
+        prevNode->next = delNode->next;
+        if (delNode == tail) {
+            tail = prevNode;
+        }
+        delete delNode;
+        size--;
+    }
+
+    // Get the size of the list
+    int getSize() const {
+        return size;
+    }
+
+    // Utility to print the list
+    void printList() const {
+        Node<T>* current = head;
+        while (current != nullptr) {
+            std::cout << current->data << " ";
+            current = current->next;
+        }
+        std::cout << std::endl;
+    }
+};
+
+--------------------------------------------------------------------------------------------------
+Two way linked list : 
+
+template <typename T>
+class Node {
+public:
+    T data;
+    Node* next;
+    Node* prev;
+
+    Node() : next(nullptr), prev(nullptr) {}
+    Node(T val) : data(val), next(nullptr), prev(nullptr) {}
+};
+
+template <typename T>
+class DoublyLinkedList {
+public:
+    Node<T>* header;
+    Node<T>* trailer;
+    int size;
+
+public:
+    // Constructor
+    DoublyLinkedList() {
+        header = new Node<T>();
+        trailer = new Node<T>();
+        header->next = trailer;
+        trailer->prev = header;
+        size = 0;
+    }
+
+    // Destructor
+    ~DoublyLinkedList() {
+        while (header->next != trailer) {
+            removeNode(header->next);
+        }
+        delete header;
+        delete trailer;
+    }
+
+    // Add a node between two existing nodes
+    void addNode(T newVal, Node<T>* prevNode, Node<T>* nextNode) {
+        Node<T>* newNode = new Node<T>(newVal);
+        newNode->next = nextNode;
+        newNode->prev = prevNode;
+        prevNode->next = newNode;
+        nextNode->prev = newNode;
+        size++;
+    }
+
+    // Remove a specific node
+    void removeNode(Node<T>* delNode) {
+        if (delNode == header || delNode == trailer) {
+            // Cannot remove header or trailer nodes.
+            return;
+        }
+        delNode->prev->next = delNode->next;
+        delNode->next->prev = delNode->prev;
+        delete delNode;
+        size--;
+    }
+
+    // Get the size of the list
+    int getSize() const {
+        return size;
+    }
+
+    // Utility to print the list
+    void printList() const {
+        Node<T>* current = header->next;
+        while (current != trailer) {
+            std::cout << current->data << " ";
+            current = current->next;
+        }
+        std::cout << std::endl;
+    }
+
+    // Add to the front
+    void addToFront(T data) {
+        addNode(data, header, header->next);
+    }
+
+    // Add to the back
+    void addToBack(T data) {
+        addNode(data, trailer->prev, trailer);
+    }
+
+    // Remove from the front
+    void removeFromFront() {
+        if (size > 0) {
+            removeNode(header->next);
+        }
+    }
+
+    // Remove from the back
+    void removeFromBack() {
+        if (size > 0) {
+            removeNode(trailer->prev);
+        }
+    }
+};
+
+------------------------------------------------------------------------------------
